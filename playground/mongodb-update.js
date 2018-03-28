@@ -42,6 +42,34 @@ MongoClient.connect('mongodb://localhost:27017/ToDoApp',(err,database)=>{
         //         console.log("Result:",res)
         // });
 
+        //Updating
+        database.db('ToDoApp').collection('ToDos')
+        .findOneAndUpdate({
+            _id:new ObjectID("5abc0b4dda0dc73c84126ac5")
+        },
+            {$set:{
+                completed:true
+            }},
+            {
+                returnOriginal:false
+            }).then((res)=>{
+                console.log("Result",res)
+            })
+
+        //updating and incrementing some property.
+        database.db('ToDoApp').collection('Users')
+        .findOneAndUpdate({
+            _id:new ObjectID("5ab7af7a99b7b9044858d871")
+        },
+            {
+                $set:{name:"Yash"},
+                $inc:{age:-5}
+            },
+            {
+                returnOriginal:false
+            }).then((res)=>{
+                console.log("Result",res)
+            })
 
     // database.close()
 });
