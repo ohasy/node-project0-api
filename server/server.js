@@ -61,6 +61,26 @@ app.get('/todos/:id',(req,res)=>{
     }
     
 })
+
+//making an api for /todos to delete any todo
+app.delete('/todos/:id',(req,res)=>{
+    //get the id
+    let id = req.params.id
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send("Error: id is not in correct format")
+    }
+        Todo.findByIdAndRemove(id).then((todo)=>{
+           if(!todo){
+               return res.status(404).send("Error: there is no todo for this id.")
+           }
+           console.log("TODO Removed:",todo)
+           res.send({todo})
+        }).catch((err)=>{
+            return res.status(400).send()
+            console.log('Error:',err)
+        })
+})
+
 app.listen(port,()=>{
     console.log(`Started on port ${port}`);
 
