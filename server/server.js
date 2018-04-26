@@ -1,10 +1,12 @@
-var express = require('express')
-var bodyParser = require('body-parser')
-var {ObjectID} = require('mongodb')
+
+const _ = require('lodash')
+const express = require('express')
+const bodyParser = require('body-parser')
+const {ObjectID} = require('mongodb')
 var {mongoose} = require("./db/mongoose")
 var {Todo} = require('./models/todo')
 var {User} = require('./models/user')
-
+//https://calm-citadel-86301.herokuapp.com/
 var app = express()
 const port = process.env.PORT || 3000;
 
@@ -80,6 +82,36 @@ app.delete('/todos/:id',(req,res)=>{
             console.log('Error:',err)
         })
 })
+
+//making an api for /todos to update any todo item.
+app.patch('/todos/:id',(req,res)=>{
+    let id = req.params.id;
+    let body = _.pick(req.body,['text','completed'])
+
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send()
+    }
+
+    if(_.isBoolean(body.completed) && body.completed){ // if completed is a boolean and its true.
+        body.completedAt = new Date().getTime();
+    }else { 
+        body.completed = false;
+        body.completedAt = null; 
+    }
+
+    Todo.findByIdAndUpdate(
+        id,{$set:body},{new:true}).then((todo)=>{ //new true means it should return the updated item. 
+            if(!todo){
+                return res.status(404).send('todo item not found.')
+            }
+            res.send({todo})
+
+        }).catch((err)=>{
+            res.status(400).send('bad request')
+        })
+
+});
+
 
 app.listen(port,()=>{
     console.log(`Started on port ${port}`);
