@@ -100,7 +100,7 @@ app.patch('/todos/:id',(req,res)=>{
     }
 
     Todo.findByIdAndUpdate(
-        id,{$set:body},{new:true}).then((todo)=>{ //new true means it should return the updated item. 
+        id,{$set:body},{new:true}).then((todo)=>{ //new true means it should return the updated item not the original one. 
             if(!todo){
                 return res.status(404).send('todo item not found.')
             }
@@ -111,6 +111,26 @@ app.patch('/todos/:id',(req,res)=>{
         })
 
 });
+
+//making an api for /users to add a user.
+app.post('/users',(req,res)=>{
+    let body = _.pick(req.body,['email','password'])
+    
+
+        let user = new User(body)
+
+        user.save().then((user)=>{
+            user.generateAuthToken().then((token)=>{
+                res.header('x-auth',token).send(user)
+            }).catch((err)=>{
+                res.status(400).send(err);
+            })
+        })
+        .catch((err)=>{
+            res.status(400).send(err)
+        })
+    
+})
 
 
 app.listen(port,()=>{
