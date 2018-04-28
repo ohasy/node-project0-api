@@ -133,6 +133,18 @@ UserSchema.statics.findByCredentials = function (email,password){
     })
 }
 
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
+
+    return user.update({
+        $pull:{ // to delete any item from array where the properties is matched.
+            tokens:{
+                token:token
+            }
+        }
+    })
+}
+
 var  User = mongoose.model('Users',UserSchema)
 
 module.exports = {

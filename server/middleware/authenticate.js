@@ -15,6 +15,7 @@
         // res.send(user);
         req.user = user;
         req.token = token;
+        console.log(" user details:",req.user)
         next(); // it is used so that next function in the parameter acn be called.
 
     }).catch((error)=>{
