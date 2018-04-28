@@ -80,6 +80,7 @@ UserSchema.statics.findByToken = function(token){
     })
 }
 
+//using mongoose middleware to hash the password befor the save event.
 UserSchema.pre('save',function(next){
     var user = this;
 
@@ -94,6 +95,43 @@ UserSchema.pre('save',function(next){
         next()
     }
 })
+
+UserSchema.statics.findByCredentials = function (email,password){
+    var User = this;
+//first we check if email is there, and then 
+//compare hash with raw password given by client
+//if it matches we send user object
+//if it dont we throw error
+    return User.findOne({email}).then((user)=>{
+        if(!user){
+            return Promise.reject("Error: Invalid Credentials");
+        }
+        return bcrypt.compare(password,user.password).then((res)=>{
+
+            if(res){
+                    return user;
+                }
+                else{
+                    return "Error: Invalid Credentials"
+                }
+                console.log("compare hashed password:",res)
+
+            }).catch((err)=>{
+                return "Error: Invalid Credentials"
+        })
+        // return new Promise((resolve,reject)=>{
+        //     bcrypt.compare(password,user.password,(err,res)=>{ //here user.password is hash password stored in the db
+        //         if(res){
+        //             resolve(user);
+        //         }
+        //         else{
+        //             reject("Error: Invalid Credentials")
+        //         }
+        //         console.log("compare hashed password:",res)
+        //     })
+        // })
+    })
+}
 
 var  User = mongoose.model('Users',UserSchema)
 
