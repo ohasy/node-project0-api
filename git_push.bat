@@ -6,7 +6,7 @@ git add .
 SET /P commit_msg=Please enter your commit msg:
 git commit -m "%commit_msg%"
 git push -u origin master
-echo pushed to heroku successfully.
+echo pushed to git successfully.
 pause
 SET /P push_heroku=Do you want to push it to heroku also y or n:
 echo %push_heroku%
