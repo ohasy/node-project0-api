@@ -6,6 +6,7 @@ const {ObjectID} = require('mongodb')
 var {mongoose} = require("./db/mongoose")
 var {Todo} = require('./models/todo')
 var {User} = require('./models/user')
+var {authenticate} = require('./middleware/authenticate')
 //https://calm-citadel-86301.herokuapp.com/
 var app = express()
 const port = process.env.PORT || 3000;
@@ -119,9 +120,9 @@ app.post('/users',(req,res)=>{
 
         let user = new User(body)
 
-        user.save().then((user)=>{
+        user.save().then((user_res)=>{
             user.generateAuthToken().then((token)=>{
-                res.header('x-auth',token).send(user)
+                res.header('x-auth',token).send(user_res)
             }).catch((err)=>{
                 res.status(400).send(err);
             })
@@ -132,6 +133,12 @@ app.post('/users',(req,res)=>{
     
 })
 
+// it is a private route, it uses x-auth token in header in order to be successful. 
+// the implementation of that is done in authenticate middleware.
+
+app.get('/users/me',authenticate,(req,res)=>{
+    res.send(req.user)
+})
 
 app.listen(port,()=>{
     console.log(`Started on port ${port}`);
