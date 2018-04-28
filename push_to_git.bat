@@ -7,8 +7,8 @@ SET /P commit_msg=Please enter your commit msg:
 git commit -m "%commit_msg%"
 git push -u origin master
 pause
-SET /P heroku=Do you want to push it to heroku also? <y/n>:
-IF %heroku%=="y" GOTO HEROKU_PUSH
+SET /P push_heroku=Do you want to push it to heroku also:
+IF %push_heroku%=="y" GOTO HEROKU_PUSH
 GOTO END
 :HEROKU_PUSH
 echo puhsing to heroku
