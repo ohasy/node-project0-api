@@ -9,11 +9,12 @@ git push -u origin master
 echo pushed to heroku successfully.
 pause
 SET /P push_heroku=Do you want to push it to heroku also y or n:
-IF %push_heroku%=='y' GOTO HEROKU_PUSH
+echo %push_heroku%
+IF %push_heroku%==y GOTO HEROKU_PUSH
 GOTO END
 :HEROKU_PUSH
 echo puhsing to heroku
-git push -u origin heroku
+git push -u heroku master
+echo pushed to heroku successfully.
 :END
-echo pushed to git successfully.
 pause
